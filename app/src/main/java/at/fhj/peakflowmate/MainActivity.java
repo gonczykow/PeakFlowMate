@@ -1,0 +1,61 @@
+package at.fhj.peakflowmate;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import at.fhj.peakflowmate.data.model.Measurement;
+import at.fhj.peakflowmate.data.repository.MeasurementRepository;
+import at.fhj.peakflowmate.ui.diary.DiaryActivity;
+import at.fhj.peakflowmate.ui.measurement.MicrophoneActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private MeasurementRepository repository;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        repository = new MeasurementRepository(this);
+
+        Button btnMeasure = findViewById(R.id.btnMeasure);
+        Button btnDiary = findViewById(R.id.btnDiary);
+        TextView tvLast = findViewById(R.id.tvLastMeasurement);
+
+        repository.getAll().observe(this, measurements -> {
+            if (measurements != null && measurements.size() > 0) {
+                Measurement last = measurements.get(0);
+                String date = new SimpleDateFormat("dd.MM.yyyy",
+                        Locale.getDefault()).format(new Date(last.getTimestamp()));
+                tvLast.setText("Letzte Messung: " + last.getValue() + " l/min – " + date);
+            } else {
+                tvLast.setText("Noch keine Messungen");
+            }
+        });
+
+        btnMeasure.setOnClickListener(v ->
+                startActivity(new Intent(this, MicrophoneActivity.class)));
+
+        btnDiary.setOnClickListener(v ->
+                startActivity(new Intent(this, DiaryActivity.class)));
+    }
+}

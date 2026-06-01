@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvInstruction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Atmen Sie möglichst schnell und stark aus"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="64dp"/>
+
+    <LinearLayout
+        android:id="@+id/micIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        app:layout_constraintTop_toBottomOf="@id/tvInstruction"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="48dp">
+
+        <View android:id="@+id/bar1" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+        <View android:id="@+id/bar2" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+        <View android:id="@+id/bar3" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+        <View android:id="@+id/bar4" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+        <View android:id="@+id/bar5" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+        <View android:id="@+id/bar6" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+        <View android:id="@+id/bar7" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Warte auf Ausatmung..."
+        android:textSize="14sp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintTop_toBottomOf="@id/micIndicator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

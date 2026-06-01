@@ -1,0 +1,110 @@
+package at.fhj.peakflowmate.audio;
+
+import android.Manifest;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+
+import androidx.annotation.RequiresPermission;
+
+public class AudioAnalyser {
+
+    public interface OnExhaleDetected {
+        void onSuccess(String quality);
+
+        void onFailure();
+    }
+
+    private static final int SAMPLE_RATE = 44100;
+    private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(
+            SAMPLE_RATE,
+            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT
+    );
+
+    private static final int THRESHOLD_GOOD = 3000;
+    private static final int THRESHOLD_WEAK = 1200;
+
+    private static final int MIN_DURATION_MS = 200;
+    private static final int MAX_DURATION_MS = 5000;
+
+    private AudioRecord audioRecord;
+    private boolean isRecording = false;
+    private final OnExhaleDetected listener;
+
+    public AudioAnalyser(OnExhaleDetected listener) {
+        this.listener = listener;
+    }
+
+    public void start() {
+        audioRecord = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                BUFFER_SIZE
+        );
+
+        audioRecord.startRecording();
+        isRecording = true;
+
+        new Thread(this::analyse).start();
+    }
+
+    private void analyse() {
+        short[] buffer = new short[BUFFER_SIZE];
+        long exhaleStart = -1;
+        int peakRms = 0;
+
+        while (isRecording) {
+            int read = audioRecord.read(buffer, 0, BUFFER_SIZE);
+            if (read <= 0) continue;
+
+            int rms = calculateRms(buffer, read);
+
+            if (rms >= THRESHOLD_WEAK) {
+                if (exhaleStart < 0) exhaleStart = System.currentTimeMillis();
+                if (rms > peakRms) peakRms = rms;
+
+                long duration = System.currentTimeMillis() - exhaleStart;
+                if (duration >= MAX_DURATION_MS) {
+                    stop();
+                    String quality = peakRms >= THRESHOLD_GOOD ? "good" : "weak";
+                    listener.onSuccess(quality);
+                }
+
+            } else if (exhaleStart > 0) {
+
+                long duration = System.currentTimeMillis() - exhaleStart;
+
+                if (duration >= MIN_DURATION_MS) {
+                    stop();
+                    String quality = peakRms >= THRESHOLD_GOOD ? "good" : "weak";
+                    listener.onSuccess(quality);
+                } else {
+                    exhaleStart = -1;
+                    peakRms = 0;
+                }
+
+            }
+        }
+    }
+
+            private int calculateRms ( short[] buffer, int read){
+                long sum = 0;
+                for (int i = 0; i < read; i++) {
+                    sum += buffer[i] * buffer[i];
+                }
+                return (int) Math.sqrt((double) sum / read);
+            }
+
+            public void stop () {
+                isRecording = false;
+                if (audioRecord != null) {
+                    audioRecord.stop();
+                    audioRecord.release();
+                    audioRecord = null;
+                }
+            }
+
+        }
