@@ -37,6 +37,7 @@ public class AudioAnalyser {
         this.listener = listener;
     }
 
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public void start() {
         audioRecord = new AudioRecord(
                 MediaRecorder.AudioSource.MIC,
