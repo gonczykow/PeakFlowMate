@@ -1,6 +1,7 @@
 package at.fhj.peakflowmate.ui.measurement;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -80,9 +81,19 @@ public class MicrophoneActivity extends AppCompatActivity {
 
             @Override
             public void onFailure() {
-                runOnUiThread(() ->
-                    tvStatus.setText("Bitte noch einmal versuchen"));
-                };
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(MicrophoneActivity.this)
+                            .setTitle("Nicht erkannt")
+                            .setMessage("Bitte noch einmal versuchen")
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                AudioAnalyser audioAnalyzer = new AudioAnalyser(this);
+                                audioAnalyzer.start();
+                            })
+                            .setNegativeButton("Abbrechen", (dialog, which) -> finish())
+                            .setCancelable(false)
+                            .show();
+                });
+            }
             });
 
         audioAnalyser.start();

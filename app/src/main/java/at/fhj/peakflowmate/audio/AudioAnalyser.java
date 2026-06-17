@@ -4,6 +4,7 @@ import android.Manifest;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
 
@@ -23,10 +24,10 @@ public class AudioAnalyser {
     );
 
     private static final int THRESHOLD_GOOD = 3000;
-    private static final int THRESHOLD_WEAK = 1200;
+    private static final int THRESHOLD_WEAK = 1000;
 
     private static final int MIN_DURATION_MS = 200;
-    private static final int MAX_DURATION_MS = 5000;
+    private static final int MAX_DURATION_MS = 3000;
 
     private AudioRecord audioRecord;
     private boolean isRecording = false;
@@ -54,6 +55,8 @@ public class AudioAnalyser {
     private void analyse() {
         short[] buffer = new short[BUFFER_SIZE];
         long exhaleStart = -1;
+        long lastActiveTime = -1;
+        long listenStart = System.currentTimeMillis();
         int peakRms = 0;
 
         while (isRecording) {
@@ -62,8 +65,20 @@ public class AudioAnalyser {
 
             int rms = calculateRms(buffer, read);
 
+            if (exhaleStart < 0) {
+                long waitDuration = System.currentTimeMillis() - listenStart;
+                if (waitDuration >= 10000) {
+                    stop();
+                    listener.onFailure();
+                    return;
+                }
+            }
+
             if (rms >= THRESHOLD_WEAK) {
-                if (exhaleStart < 0) exhaleStart = System.currentTimeMillis();
+                if (exhaleStart < 0) {
+                    exhaleStart = System.currentTimeMillis();
+                }
+                lastActiveTime = System.currentTimeMillis();
                 if (rms > peakRms) peakRms = rms;
 
                 long duration = System.currentTimeMillis() - exhaleStart;
@@ -73,19 +88,22 @@ public class AudioAnalyser {
                     listener.onSuccess(quality);
                 }
 
+
             } else if (exhaleStart > 0) {
 
                 long duration = System.currentTimeMillis() - exhaleStart;
+                long silenceDuration = System.currentTimeMillis() - lastActiveTime;
 
                 if (duration >= MIN_DURATION_MS) {
                     stop();
                     String quality = peakRms >= THRESHOLD_GOOD ? "good" : "weak";
                     listener.onSuccess(quality);
-                } else {
+                } else if (silenceDuration >= 500){
                     exhaleStart = -1;
+                    lastActiveTime = -1;
                     peakRms = 0;
+                    listener.onFailure();
                 }
-
             }
         }
     }
