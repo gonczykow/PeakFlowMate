@@ -181,8 +181,6 @@ public class CameraActivity extends AppCompatActivity {
 
     private void analyzeImage(Bitmap bitmap) {
 
-        DebugUtils.save(this, bitmap, "original.jpg");
-
         Log.d("OCR", "Starting recognition...");
 
         ocrPipeline.recognize(bitmap)

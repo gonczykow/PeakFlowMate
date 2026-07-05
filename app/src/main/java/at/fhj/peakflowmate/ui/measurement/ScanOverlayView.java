@@ -69,7 +69,7 @@ public class ScanOverlayView extends View {
         );
 
         float frameWidth = dp(250);
-        float frameHeight = dp(560);
+        float frameHeight = dp(500);
 
         float left = (getWidth() - frameWidth) / 2f;
         float top = (getHeight() - frameHeight) / 2f;
@@ -132,18 +132,6 @@ public class ScanOverlayView extends View {
         );
 
         Path p = new Path();
-
-        float cx = frame.right - dp(28);
-        float cy = frame.bottom - dp(65);
-
-        p.moveTo(cx, cy - dp(35));
-        p.quadTo(
-                cx + dp(25),
-                cy,
-                cx,
-                cy + dp(35)
-        );
-
         canvas.drawPath(p, hintPaint);
     }
 

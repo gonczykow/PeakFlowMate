@@ -78,4 +78,23 @@
     <string name="guide_nicht_gefunden">Guide nicht gefunden</string>
     <string name="slider_nicht_gefunden">Slider nicht gefunden</string>
     <string name="crop_fehlgeschlagen">Crop fehlgeschlagen</string>
+    <string name="los_geht_s">Los geht\'s!</string>
+    <string name="weiter">Weiter</string>
+    <string name="berspringen">Überspringen</string>
+    <string name="weiter1">Weiter</string>
+    <string name="onboarding_title_1">Ausatmen</string>
+    <string name="onboarding_desc_1">Halten Sie das Gerät bereit und atmen Sie so schnell und kräftig wie möglich aus. Das Mikrofon prüft Ihre Technik automatisch.</string>
+
+    <string name="onboarding_title_2">Skala ablesen</string>
+    <string name="onboarding_desc_2">Richten Sie die Kamera auf die Skala des Peak-Flow-Meters. Die App erkennt den Wert automatisch.</string>
+
+    <string name="onboarding_title_3">Tagebuch führen</string>
+    <string name="onboarding_desc_3">Alle Messungen werden gespeichert. Verfolgen Sie Ihren Verlauf im Tagebuch und exportieren Sie die Daten für Ihren Arzt.</string>
+    <string name="l_min2">" l/min – "</string>
+    <string name="slash1">/</string>
+    <string name="parenthesis1">)</string>
+    <string name="slash2">/</string>
+    <string name="parenthesis2">)</string>
+    <string name="slash3">/</string>
+    <string name="parenthesis3">)</string>
 </resources>

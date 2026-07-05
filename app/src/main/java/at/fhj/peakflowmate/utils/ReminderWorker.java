@@ -3,6 +3,8 @@ package at.fhj.peakflowmate.utils;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.app.PendingIntent;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -10,6 +12,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import at.fhj.peakflowmate.MainActivity;
 import at.fhj.peakflowmate.R;
 
 public class ReminderWorker extends Worker {
@@ -42,12 +45,27 @@ public class ReminderWorker extends Worker {
             manager.createNotificationChannel(channel);
         }
 
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        int pendingFlags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                : PendingIntent.FLAG_UPDATE_CURRENT;
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                pendingFlags
+        );
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(
                         getApplicationContext(), "reminder")
                         .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle(context.getString(R.string.peak_flow_mate))
                         .setContentText(context.getString(R.string.zeit_f_r_ihre_t_gliche_peak_flow_messung))
+                        .setContentIntent(pendingIntent)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true);
 

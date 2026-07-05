@@ -25,6 +25,9 @@
         android:theme="@style/Theme.PeakFlowMate">
         <activity android:name=".ui.settings.SettingsActivity"/>
         <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:exported="false"/>
+        <activity
             android:name=".ui.diary.DiaryActivity"
             android:exported="false" />
         <activity
@@ -40,9 +43,8 @@
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 

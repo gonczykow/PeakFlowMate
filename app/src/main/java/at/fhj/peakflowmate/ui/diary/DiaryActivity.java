@@ -45,11 +45,20 @@ public class DiaryActivity extends AppCompatActivity {
     private TextView tvLast, tvAvg, tvMax, tvMin;
     private int currentDays = 7;
 
+    private LiveData<List<Measurement>> currentDataLiveData;
+    private LiveData<Integer> personalBestLiveData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_diary);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         repository = new MeasurementRepository(this);
         adapter = new MeasurementAdapter();
@@ -66,7 +75,8 @@ public class DiaryActivity extends AppCompatActivity {
 
         setupChart();
 
-        repository.getPersonalBest().observe(this, pb -> {
+        personalBestLiveData = repository.getPersonalBest();
+        personalBestLiveData.observe(this, pb -> {
             if (pb != null) adapter.setPersonalBest(pb);
         });
 
@@ -81,11 +91,9 @@ public class DiaryActivity extends AppCompatActivity {
     private void loadData(int days) {
         currentDays = days;
 
-        LiveData<List<Measurement>> source = days > 0
-                ? repository.getSince(days)
-                : repository.getAll();
+        currentDataLiveData = (days > 0) ? repository.getSince(days) : repository.getAll();
 
-        source.observe(this, measurements -> {
+        currentDataLiveData.observe(this, measurements -> {
             if (measurements == null || measurements.isEmpty()) {
                 tvLast.setText("–");
                 tvAvg.setText("–");
@@ -180,51 +188,50 @@ public class DiaryActivity extends AppCompatActivity {
     }
 
     private void exportCsv() {
-        repository.getAll().observe(this, measurements -> {
-            if (measurements == null || measurements.isEmpty()) {
-                Toast.makeText(this, R.string.keine_daten_zum_exportieren,
-                        Toast.LENGTH_SHORT).show();
-                return;
+        LiveData<List<Measurement>> exportSource = repository.getAll();
+
+        exportSource.observe(this, new androidx.lifecycle.Observer<List<Measurement>>() {
+            @Override
+            public void onChanged(List<Measurement> measurements) {
+                exportSource.removeObserver(this);
+
+                if (measurements == null || measurements.isEmpty()) {
+                    Toast.makeText(DiaryActivity.this, R.string.keine_daten_zum_exportieren, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(getString(R.string.datum_uhrzeit_wert_l_min_technik));
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                Date reusableDate = new Date();
+
+                for (Measurement m : measurements) {
+                    reusableDate.setTime(m.getTimestamp());
+                    sb.append(dateFormat.format(reusableDate)).append(",");
+                    sb.append(timeFormat.format(reusableDate)).append(",");
+                    sb.append(m.getValue()).append(",");
+                    sb.append(m.getTechniqueQuality() != null ? m.getTechniqueQuality() : "").append("\n");
+                }
+
+                File file = new File(getExternalFilesDir(null), "peak_flow_export.csv");
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    fos.write(sb.toString().getBytes());
+                } catch (Exception e) {
+                    Toast.makeText(DiaryActivity.this, R.string.export_fehlgeschlagen, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Uri uri = FileProvider.getUriForFile(DiaryActivity.this, getPackageName() + ".fileprovider", file);
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/csv");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(intent, getString(R.string.export_als_csv)));
             }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(getString(R.string.datum_uhrzeit_wert_l_min_technik));
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    "dd.MM.yyyy", Locale.getDefault());
-            SimpleDateFormat timeFormat = new SimpleDateFormat(
-                    "HH:mm", Locale.getDefault());
-
-            for (Measurement m : measurements) {
-                Date date = new Date(m.getTimestamp());
-                sb.append(dateFormat.format(date)).append(",");
-                sb.append(timeFormat.format(date)).append(",");
-                sb.append(m.getValue()).append(",");
-                sb.append(m.getTechniqueQuality() != null
-                        ? m.getTechniqueQuality() : "").append("\n");
-            }
-
-            File file = new File(getExternalFilesDir(null),
-                    "peak_flow_export.csv");
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                fos.write(sb.toString().getBytes());
-            } catch (Exception e) {
-                Toast.makeText(this, R.string.export_fehlgeschlagen,
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Uri uri = FileProvider.getUriForFile(
-                    this,
-                    getPackageName() + ".fileprovider",
-                    file
-            );
-
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/csv");
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(Intent.createChooser(intent, getString(R.string.export_als_csv)));
         });
     }
 }

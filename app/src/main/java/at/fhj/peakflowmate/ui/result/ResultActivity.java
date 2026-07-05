@@ -27,6 +27,12 @@ public class ResultActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_result);
 
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
         int value = getIntent().getIntExtra("value", 0);
         String techniqueQuality = getIntent().getStringExtra("technique_quality");
         MeasurementRepository repository = new MeasurementRepository(this);
@@ -46,16 +52,14 @@ public class ResultActivity extends AppCompatActivity {
             int greenMin = ZoneSettings.getGreenMin(this);
             int yellowMin = ZoneSettings.getYellowMin(this);
 
-            tvValue.setText(String.valueOf(value));
-
             if (value >= greenMin) {
-                tvZone.setText(getString(R.string.gr_ne_zone) + value + "/" + pb + ")");
+                tvZone.setText(getString(R.string.gr_ne_zone) + value + getString(R.string.slash1) + pb + getString(R.string.parenthesis1));
                 tvZone.setBackgroundColor(0xFF1D9E75);
             } else if (value >= yellowMin) {
-                tvZone.setText(getString(R.string.gelbe_zone) + value + "/" + pb + ")");
+                tvZone.setText(getString(R.string.gelbe_zone) + value + getString(R.string.slash2) + pb + getString(R.string.parenthesis2));
                 tvZone.setBackgroundColor(0xFFEF9F27);
             } else {
-                tvZone.setText(getString(R.string.rote_zone) + value + "/" + pb + ")");
+                tvZone.setText(getString(R.string.rote_zone) + value + getString(R.string.slash3) + pb + getString(R.string.parenthesis3));
                 tvZone.setBackgroundColor(0xFFE24B4A);
             }
 

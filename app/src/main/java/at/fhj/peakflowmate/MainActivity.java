@@ -19,6 +19,7 @@ import at.fhj.peakflowmate.data.model.Measurement;
 import at.fhj.peakflowmate.data.repository.MeasurementRepository;
 import at.fhj.peakflowmate.ui.diary.DiaryActivity;
 import at.fhj.peakflowmate.ui.measurement.MicrophoneActivity;
+import at.fhj.peakflowmate.ui.onboarding.OnboardingActivity;
 import at.fhj.peakflowmate.ui.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +29,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolean onboardingDone = getSharedPreferences("app_prefs", MODE_PRIVATE)
+                .getBoolean("onboarding_done", false);
+        if (!onboardingDone) {
+            startActivity(new Intent(this, OnboardingActivity.class));
+            finish();
+            return;
+        }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -49,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 Measurement last = measurements.get(0);
                 String date = new SimpleDateFormat("dd.MM.yyyy",
                         Locale.getDefault()).format(new Date(last.getTimestamp()));
-                tvLast.setText(getString(R.string.letzte_messung1) + last.getValue() + " l/min – " + date);
+                tvLast.setText(getString(R.string.letzte_messung1) + last.getValue() + getString(R.string.l_min2) + date);
             } else {
                 tvLast.setText(R.string.noch_keine_messungen);
             }

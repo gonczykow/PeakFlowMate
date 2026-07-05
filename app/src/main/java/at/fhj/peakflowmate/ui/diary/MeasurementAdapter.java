@@ -22,7 +22,7 @@ public class MeasurementAdapter extends RecyclerView.Adapter<MeasurementAdapter.
     private List<Measurement> items = new ArrayList<>();
     private int personalBest = 500;
 
-    public MeasurementAdapter() {;
+    public MeasurementAdapter() {
     }
 
     public void setItems(List<Measurement> items) {
