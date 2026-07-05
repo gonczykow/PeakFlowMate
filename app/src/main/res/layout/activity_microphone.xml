@@ -9,7 +9,7 @@
         android:id="@+id/tvInstruction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Atmen Sie möglichst schnell und stark aus"
+        android:text="@string/atmen_sie_moeglichst_schnell_und_stark_aus"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -29,12 +29,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="48dp">
 
-        <View android:id="@+id/bar1" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
-        <View android:id="@+id/bar2" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
-        <View android:id="@+id/bar3" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
-        <View android:id="@+id/bar4" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
-        <View android:id="@+id/bar5" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
-        <View android:id="@+id/bar6" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
+        <View android:id="@+id/bar1" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75" android:layout_marginEnd="4dp"/>
+        <View android:id="@+id/bar2" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75" android:layout_marginEnd="4dp"/>
+        <View android:id="@+id/bar3" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75" android:layout_marginEnd="4dp"/>
+        <View android:id="@+id/bar4" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75" android:layout_marginEnd="4dp"/>
+        <View android:id="@+id/bar5" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75" android:layout_marginEnd="4dp"/>
+        <View android:id="@+id/bar6" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75" android:layout_marginEnd="4dp"/>
         <View android:id="@+id/bar7" android:layout_width="8dp" android:layout_height="8dp" android:background="#1D9E75"/>
 
     </LinearLayout>
@@ -43,7 +43,7 @@
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Warte auf Ausatmung..."
+        android:text="@string/warte_auf_ausatmung"
         android:textSize="14sp"
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintTop_toBottomOf="@id/micIndicator"

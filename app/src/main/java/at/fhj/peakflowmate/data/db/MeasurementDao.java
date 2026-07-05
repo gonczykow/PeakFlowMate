@@ -18,9 +18,6 @@ public interface MeasurementDao {
     @Insert
     void insert(Measurement measurement);
 
-    @Delete
-    void delete(Measurement measurement);
-
     @Query("SELECT * FROM measurements ORDER BY timestamp DESC")
     LiveData<List<Measurement>> getAll();
 
@@ -29,10 +26,4 @@ public interface MeasurementDao {
 
     @Query("SELECT MAX(value) FROM measurements")
     LiveData<Integer> getPersonalBest();
-
-    @Query("SELECT AVG(value) FROM measurements WHERE timestamp >= :from")
-    LiveData<Float> getAverageSince(long from);
-
-    @Query("SELECT MIN(value) FROM measurements WHERE timestamp >= :from")
-    LiveData<Integer> getMinSince(long from);
 }

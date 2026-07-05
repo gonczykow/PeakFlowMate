@@ -35,7 +35,7 @@ public class MicrophoneActivity extends AppCompatActivity {
                             startListening();
                         } else {
                             Toast.makeText(this,
-                                    "Mikrofon wird benoetigt",
+                                    R.string.mikrofon_wird_benoetigt,
                                     Toast.LENGTH_LONG).show();
                             finish();
                         }
@@ -64,7 +64,7 @@ public class MicrophoneActivity extends AppCompatActivity {
 
     private void startListening() {
         TextView tvStatus = findViewById(R.id.tvStatus);
-        tvStatus.setText("Hoeren...");
+        tvStatus.setText(R.string.h_ren);
 
         animateBars();
 
@@ -83,13 +83,13 @@ public class MicrophoneActivity extends AppCompatActivity {
             public void onFailure() {
                 runOnUiThread(() -> {
                     new AlertDialog.Builder(MicrophoneActivity.this)
-                            .setTitle("Nicht erkannt")
-                            .setMessage("Bitte noch einmal versuchen")
-                            .setPositiveButton("OK", (dialog, which) -> {
+                            .setTitle(R.string.nicht_erkannt)
+                            .setMessage(R.string.bitte_noch_einmal_versuchen)
+                            .setPositiveButton(R.string.ok, (dialog, which) -> {
                                 AudioAnalyser audioAnalyzer = new AudioAnalyser(this);
                                 audioAnalyzer.start();
                             })
-                            .setNegativeButton("Abbrechen", (dialog, which) -> finish())
+                            .setNegativeButton(R.string.abbrechen, (dialog, which) -> finish())
                             .setCancelable(false)
                             .show();
                 });

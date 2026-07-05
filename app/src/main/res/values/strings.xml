@@ -1,47 +1,81 @@
 <resources>
     <string name="app_name">PeakFlowMate</string>
-    <string name="zur_messung">Zur Messung</string>
-    <string name="zum_tagebuch">Zum Tagebuch</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="lorem_ipsum">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
-        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
-        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
-        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
-        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
-        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
-        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
-        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
-        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
-        bibendum, vel congue leo egestas.\n\n
-        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
-        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
-        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
-        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
-        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
-        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
-        est.\n\n
-        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
-        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
-        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
-        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
-        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
-        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
-        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
-        convallis.\n\n
-        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
-        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
-        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
-        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
-        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
-        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
-    </string>
+    <string name="hallo">Hallo!</string>
+    <string name="letzte_messung">Letzte Messung: –</string>
+    <string name="zur_messung">Zur Messung</string>
+    <string name="zum_tagebuch">Zum Tagebuch</string>
+    <string name="atmen_sie_moeglichst_schnell_und_stark_aus">Atmen Sie möglichst schnell und stark aus</string>
+    <string name="warte_auf_ausatmung">Warte auf Ausatmung...</string>
+    <string name="kamera_auf_die_skala_richten">Kamera auf die Skala richten</string>
+    <string name="manuell_eingeben">Manuell eingeben</string>
+    <string name="foto_aufnehmen">Foto aufnehmen</string>
+    <string name="peak_flow_meter_vollst_ndig_im_rahmen_ausrichten">Peak-Flow-Meter vollständig im Rahmen ausrichten</string>
+    <string name="_7_tage">7 Tage</string>
+    <string name="_30_tage">30 Tage</string>
+    <string name="alle">Alle</string>
+    <string name="letzter_wert">Letzter Wert</string>
+    <string name="durchschnitt">Durchschnitt</string>
+    <string name="bestwert">Bestwert</string>
+    <string name="minimum">Minimum</string>
+    <string name="als_csv_exportieren">Als CSV exportieren</string>
+    <string name="einstellungen">Einstellungen</string>
+    <string name="ergebnis">Ergebnis</string>
+    <string name="l_min">L/Min.</string>
+    <string name="speichern">Speichern</string>
+    <string name="zur_ck_zur_messung">Zurück zur Messung</string>
+    <string name="zonengrenzen_einstellen">Zonengrenzen einstellen</string>
+    <string name="gr_ne_zone_ab_l_min">Grüne Zone ab (L/Min.)</string>
+    <string name="gelbe_zone_ab_l_min">Gelbe Zone ab (L/Min.)</string>
+    <string name="rote_zone_alles_unterhalb_der_gelben_zone">Rote Zone: alles unterhalb der gelben Zone</string>
+    <string name="erinnerungszeit">Erinnerungszeit</string>
+    <string name="uhrzeit_w_hlen">Uhrzeit wählen</string>
+    <string name="speichern1">Speichern</string>
+    <string name="l_min1">L/Min.</string>
+    <string name="letzte_messung1">"Letzte Messung: "</string>
+    <string name="noch_keine_messungen">Noch keine Messungen</string>
+    <string name="messerinnerung">Messerinnerung</string>
+    <string name="zeit_f_r_ihre_t_gliche_peak_flow_messung">Zeit für Ihre tägliche Peak-Flow-Messung!</string>
+    <string name="peak_flow_mate">Peak-Flow-Mate</string>
+    <string name="bitte_alle_felder_ausf_llen">Bitte alle Felder ausfüllen</string>
+    <string name="gr_ne_zone_muss_h_her_als_gelbe_sein">Grüne Zone muss höher als gelbe sein</string>
+    <string name="gespeichert">Gespeichert!</string>
+    <string name="benachrichtigungen_wurden_nicht_erlaubt">Benachrichtigungen wurden nicht erlaubt</string>
+    <string name="gr_ne_zone">✓ Grüne Zone (</string>
+    <string name="gelbe_zone">⚠ Gelbe Zone (</string>
+    <string name="rote_zone">✗ Rote Zone (</string>
+    <string name="ausatemtechnik_gut">" Ausatemtechnik: gut"</string>
+    <string name="ausatemtechnik_schwach_bitte_kr_ftiger_ausatmen">Ausatemtechnik: schwach — bitte kräftiger ausatmen</string>
+    <string name="gespeichert1">Gespeichert!</string>
+    <string name="mikrofon_wird_benoetigt">Mikrofon wird benoetigt</string>
+    <string name="h_ren">Hören...</string>
+    <string name="nicht_erkannt">Nicht erkannt</string>
+    <string name="bitte_noch_einmal_versuchen">Bitte noch einmal versuchen</string>
+    <string name="abbrechen">Abbrechen</string>
+    <string name="ok">OK</string>
+    <string name="kamera_wird_ben_tigt">Kamera wird benötigt</string>
+    <string name="fehler">Fehler</string>
+    <string name="bitte_warten">Bitte warten...</string>
+    <string name="verarbeitung">Verarbeitung...</string>
+    <string name="fehler_beim_aufnehmen">Fehler beim Aufnehmen</string>
+    <string name="foto_aufnehmen1">Foto aufnehmen</string>
+    <string name="foto_aufnehmen2">Foto aufnehmen</string>
+    <string name="foto_aufnehmen3">Foto aufnehmen</string>
+    <string name="_50_900">50 - 900</string>
+    <string name="wert_manuell_eingeben">Wert manuell eingeben</string>
+    <string name="ok1">OK</string>
+    <string name="wert_muss_zwischen_50_und_900_liegen">Wert muss zwischen 50 und 900 liegen</string>
+    <string name="abbrechen1">Abbrechen</string>
+    <string name="keine_daten_zum_exportieren">Keine Daten zum Exportieren</string>
+    <string name="datum_uhrzeit_wert_l_min_technik">Datum,Uhrzeit,Wert (L/Min.),Technik\n</string>
+    <string name="export_fehlgeschlagen">Export fehlgeschlagen</string>
+    <string name="export_als_csv">Export als CSV</string>
+    <string name="guide_nicht_gefunden">Guide nicht gefunden</string>
+    <string name="slider_nicht_gefunden">Slider nicht gefunden</string>
+    <string name="crop_fehlgeschlagen">Crop fehlgeschlagen</string>
 </resources>

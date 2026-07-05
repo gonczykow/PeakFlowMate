@@ -23,6 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PeakFlowMate">
+        <activity android:name=".ui.settings.SettingsActivity"/>
         <activity
             android:name=".ui.diary.DiaryActivity"
             android:exported="false" />

@@ -12,7 +12,7 @@
         android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hallo!"
+        android:text="@string/hallo"
         android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:id="@+id/tvLastMeasurement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Letzte Messung: –"
+        android:text="@string/letzte_messung"
         android:textSize="14sp"
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintTop_toBottomOf="@id/tvGreeting"
@@ -34,7 +34,7 @@
         android:id="@+id/btnMeasure"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:text="Zur Messung"
+        android:text="@string/zur_messung"
         app:layout_constraintTop_toBottomOf="@id/tvLastMeasurement"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,10 +44,22 @@
         android:id="@+id/btnDiary"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:text="Zum Tagebuch"
+        android:text="@string/zum_tagebuch"
         app:layout_constraintTop_toBottomOf="@id/btnMeasure"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp"/>
+
+    <ImageButton
+        android:id="@+id/btnSettings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_preferences"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="0dp"
+        android:contentDescription="@string/einstellungen"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

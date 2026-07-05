@@ -23,8 +23,8 @@ public class AudioAnalyser {
             AudioFormat.ENCODING_PCM_16BIT
     );
 
-    private static final int THRESHOLD_GOOD = 3000;
-    private static final int THRESHOLD_WEAK = 1000;
+    private static final int THRESHOLD_GOOD = 4000;
+    private static final int THRESHOLD_WEAK = 2000;
 
     private static final int MIN_DURATION_MS = 200;
     private static final int MAX_DURATION_MS = 3000;

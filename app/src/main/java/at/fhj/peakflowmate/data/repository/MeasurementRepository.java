@@ -22,10 +22,6 @@ public class MeasurementRepository {
         new Thread(() -> dao.insert(measurement)).start();
     }
 
-    public void delete(Measurement measurement) {
-        new Thread(() -> dao.delete(measurement)).start();
-    }
-
     public LiveData<List<Measurement>> getAll() {
         return dao.getAll();
     }
@@ -37,10 +33,5 @@ public class MeasurementRepository {
 
     public LiveData<Integer> getPersonalBest() {
         return dao.getPersonalBest();
-    }
-
-    public LiveData<Float> getAverageSince(int days) {
-        long from = System.currentTimeMillis() - (long) days * 24 * 60 * 60 * 1000;
-        return dao.getAverageSince(from);
     }
 }

@@ -19,6 +19,7 @@ import at.fhj.peakflowmate.data.model.Measurement;
 import at.fhj.peakflowmate.data.repository.MeasurementRepository;
 import at.fhj.peakflowmate.ui.diary.DiaryActivity;
 import at.fhj.peakflowmate.ui.measurement.MicrophoneActivity;
+import at.fhj.peakflowmate.ui.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,15 +41,17 @@ public class MainActivity extends AppCompatActivity {
         Button btnMeasure = findViewById(R.id.btnMeasure);
         Button btnDiary = findViewById(R.id.btnDiary);
         TextView tvLast = findViewById(R.id.tvLastMeasurement);
+        findViewById(R.id.btnSettings).setOnClickListener(v ->
+                startActivity(new Intent(this, SettingsActivity.class)));
 
         repository.getAll().observe(this, measurements -> {
             if (measurements != null && measurements.size() > 0) {
                 Measurement last = measurements.get(0);
                 String date = new SimpleDateFormat("dd.MM.yyyy",
                         Locale.getDefault()).format(new Date(last.getTimestamp()));
-                tvLast.setText("Letzte Messung: " + last.getValue() + " l/min – " + date);
+                tvLast.setText(getString(R.string.letzte_messung1) + last.getValue() + " l/min – " + date);
             } else {
-                tvLast.setText("Noch keine Messungen");
+                tvLast.setText(R.string.noch_keine_messungen);
             }
         });
 
