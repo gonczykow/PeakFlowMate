@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.app.PendingIntent;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -15,22 +16,48 @@ import androidx.work.WorkerParameters;
 import at.fhj.peakflowmate.MainActivity;
 import at.fhj.peakflowmate.R;
 
+/**
+ * Worker zur Anzeige einer Erinnerung an die tägliche Peak-Flow-Messung.
+ * <p>
+ * Diese Klasse wird von WorkManager ausgeführt und erstellt eine
+ * Systembenachrichtigung, die den Benutzer an die Durchführung einer
+ * Peak-Flow-Messung erinnert. Beim Antippen der Benachrichtigung wird
+ * die Hauptaktivität der Anwendung geöffnet.
+ */
 public class ReminderWorker extends Worker {
 
     Context context = getApplicationContext();
 
+    /**
+     * Erstellt einen neuen Worker für Erinnerungsbenachrichtigungen.
+     *
+     * @param context Anwendungskontext.
+     * @param params Parameter für die Ausführung des Workers.
+     */
     public ReminderWorker(@NonNull Context context,
                           @NonNull WorkerParameters params) {
         super(context, params);
     }
 
+    /**
+     * Führt den Worker aus und zeigt eine Erinnerungsbenachrichtigung an.
+     *
+     * @return {@link Result#success()}, wenn die Benachrichtigung erfolgreich
+     *         erstellt wurde.
+     */
     @NonNull
     @Override
     public Result doWork() {
         showNotification();
         return Result.success();
     }
-
+    /**
+     * Erstellt und zeigt eine Systembenachrichtigung an.
+     * <p>
+     * Falls erforderlich, wird zunächst ein Benachrichtigungskanal erstellt.
+     * Anschließend wird eine Benachrichtigung erzeugt, die beim Antippen
+     * die Hauptaktivität der Anwendung öffnet.
+     */
     private void showNotification() {
         NotificationManager manager = (NotificationManager)
                 getApplicationContext()

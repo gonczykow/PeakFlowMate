@@ -44,6 +44,15 @@ import at.fhj.peakflowmate.ocr.OcrPipeline;
 import at.fhj.peakflowmate.ui.result.ResultActivity;
 import at.fhj.peakflowmate.utils.DebugUtils;
 
+/**
+ * Aktivität zur Aufnahme eines Peak-Flow-Messgeräts und automatischen
+ * Erkennung des Messwerts.
+ * <p>
+ * Die Aktivität verwendet CameraX zur Aufnahme eines Fotos des
+ * Peak-Flow-Messgeräts. Das aufgenommene Bild wird anschließend durch
+ * eine OCR-Pipeline analysiert, um den angezeigten Messwert zu erkennen.
+ * Alternativ kann der Benutzer den Messwert manuell eingeben.
+ */
 public class CameraActivity extends AppCompatActivity {
 
     private PreviewView previewView;
@@ -69,6 +78,17 @@ public class CameraActivity extends AppCompatActivity {
                         }
                     });
 
+    /**
+     * Initialisiert die Benutzeroberfläche, die OCR-Pipeline und die Kamera.
+     * <p>
+     * Nach der Überprüfung der Kameraberechtigung wird die Kamera gestartet.
+     * Außerdem werden die Schaltflächen für die Bildaufnahme und die manuelle
+     * Eingabe des Messwerts eingerichtet.
+     *
+     * @param savedInstanceState enthält den zuvor gespeicherten Zustand der
+     *                           Aktivität oder {@code null}, falls keiner
+     *                           vorhanden ist.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -114,6 +134,12 @@ public class CameraActivity extends AppCompatActivity {
         btnManual.setOnClickListener(v -> openManualInput());
     }
 
+    /**
+     * Initialisiert CameraX und startet die Kameravorschau.
+     * <p>
+     * Erstellt eine Vorschau sowie eine {@link ImageCapture}-Instanz und
+     * bindet beide an den Lebenszyklus der Aktivität.
+     */
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> future =
                 ProcessCameraProvider.getInstance(this);
@@ -143,6 +169,13 @@ public class CameraActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
+    /**
+     * Nimmt ein Foto mit der Kamera auf.
+     * <p>
+     * Nach erfolgreicher Aufnahme wird das Bild entsprechend der
+     * Geräteausrichtung rotiert und anschließend zur OCR-Auswertung
+     * weitergegeben.
+     */
     private void takePhoto() {
         if (imageCapture == null) return;
 
@@ -179,6 +212,15 @@ public class CameraActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Führt die OCR-Erkennung auf dem aufgenommenen Bild durch.
+     * <p>
+     * Nach erfolgreicher Erkennung wird der erkannte Peak-Flow-Wert
+     * angezeigt und an die Ergebnisaktivität übergeben. Tritt ein Fehler
+     * auf, wird eine entsprechende Meldung angezeigt.
+     *
+     * @param bitmap das auszuwertende Bild.
+     */
     private void analyzeImage(Bitmap bitmap) {
 
         Log.d("OCR", "Starting recognition...");
@@ -187,15 +229,16 @@ public class CameraActivity extends AppCompatActivity {
 
                 .addOnSuccessListener(value -> {
 
+                    runOnUiThread(() -> {
                         btnCapture.setEnabled(true);
                         btnCapture.setText(R.string.foto_aufnehmen2);
-
                         showResult(value);
-                    Log.d("OCR", "Recognition finished: " + value);
+                    });
                 })
 
                 .addOnFailureListener(e -> {
 
+                    runOnUiThread(() -> {
                         btnCapture.setEnabled(true);
                         btnCapture.setText(R.string.foto_aufnehmen3);
 
@@ -204,9 +247,19 @@ public class CameraActivity extends AppCompatActivity {
                                 e.getMessage(),
                                 Toast.LENGTH_SHORT
                         ).show();
+
+                    });
                 });
     }
 
+    /**
+     * Dreht eine Bitmap um den angegebenen Winkel.
+     *
+     * @param bitmap die zu drehende Bitmap.
+     * @param degrees Drehwinkel in Grad.
+     * @return die gedrehte Bitmap oder die ursprüngliche Bitmap,
+     *         falls keine Drehung erforderlich ist.
+     */
     private Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
         if (degrees == 0) return bitmap;
         Matrix matrix = new Matrix();
@@ -215,6 +268,11 @@ public class CameraActivity extends AppCompatActivity {
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    /**
+     * Öffnet die Ergebnisaktivität und übergibt den erkannten Messwert.
+     *
+     * @param value der erkannte oder manuell eingegebene Peak-Flow-Wert.
+     */
     private void showResult(int value) {
         if (cameraProvider != null) {
             cameraProvider.unbindAll();
@@ -226,6 +284,12 @@ public class CameraActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Öffnet einen Dialog zur manuellen Eingabe des Peak-Flow-Werts.
+     * <p>
+     * Der eingegebene Wert wird auf den zulässigen Bereich geprüft und
+     * anschließend an die Ergebnisaktivität übergeben.
+     */
     private void openManualInput() {
         EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -251,6 +315,11 @@ public class CameraActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Gibt die für die Kameraverarbeitung verwendeten Ressourcen frei.
+     * <p>
+     * Beendet den Executor-Service beim Zerstören der Aktivität.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();

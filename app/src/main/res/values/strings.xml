@@ -97,4 +97,8 @@
     <string name="parenthesis2">)</string>
     <string name="slash3">/</string>
     <string name="parenthesis3">)</string>
+    <string name="wert_darf_nicht_h_her_als_900_sein">Wert darf nicht höher als 900 sein</string>
+    <string name="wert_darf_nicht_kleiner_als_50_sein">Wert darf nicht kleiner als 50 sein</string>
+    <string name="scale_normalization_failed">Scale normalization failed</string>
+    <string name="interpolation_failed">Interpolation failed</string>
 </resources>

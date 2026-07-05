@@ -19,8 +19,28 @@ import at.fhj.peakflowmate.data.model.Measurement;
 import at.fhj.peakflowmate.data.repository.MeasurementRepository;
 import at.fhj.peakflowmate.utils.ZoneSettings;
 
+/**
+ * Aktivität zur Anzeige des Messergebnisses.
+ * <p>
+ * Diese Aktivität zeigt den erkannten Peak-Flow-Wert, bewertet ihn anhand
+ * der konfigurierten Peak-Flow-Zonen und informiert den Benutzer über die
+ * Qualität der Ausatemtechnik. Das Ergebnis kann anschließend gespeichert
+ * oder verworfen werden.
+ */
 public class ResultActivity extends AppCompatActivity {
 
+    /**
+     * Initialisiert die Ergebnisansicht.
+     * <p>
+     * Liest den erkannten Peak-Flow-Wert sowie die Qualität der Ausatemtechnik
+     * aus den Intent-Daten aus, bestimmt die zugehörige Peak-Flow-Zone und
+     * richtet die Benutzeroberfläche ein. Der Benutzer kann das Ergebnis
+     * speichern oder zur vorherigen Ansicht zurückkehren.
+     *
+     * @param savedInstanceState enthält den zuvor gespeicherten Zustand der
+     *                           Aktivität oder {@code null}, falls keiner
+     *                           vorhanden ist.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +103,7 @@ public class ResultActivity extends AppCompatActivity {
                     techniqueQuality != null ? techniqueQuality : "unknown",
                     null
             );
-            new MeasurementRepository(this).insert(measurement);
+            repository.insert(measurement);
 
             Toast.makeText(this, R.string.gespeichert1, Toast.LENGTH_SHORT).show();
 

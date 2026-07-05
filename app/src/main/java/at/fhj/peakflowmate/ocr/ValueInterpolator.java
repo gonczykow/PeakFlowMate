@@ -1,17 +1,40 @@
 package at.fhj.peakflowmate.ocr;
 
 import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Berechnet den Peak-Flow-Wert anhand der Position
+ * des erkannten Schiebereglers.
+ * <p>
+ * Die Klasse interpoliert den Messwert zwischen zwei benachbarten
+ * Kalibrierungspunkten der Skala und rundet das Ergebnis auf den
+ * nächsten Zehnerwert.
+ */
 public class ValueInterpolator {
 
+    /**
+     * Interpoliert den Peak-Flow-Wert anhand der Position
+     * des Schiebereglers.
+     * <p>
+     * Liegt der Schieberegler außerhalb des kalibrierten Bereichs,
+     * wird der Wert des nächstgelegenen Kalibrierungspunkts zurückgegeben.
+     *
+     * @param slider erkannte Position des Schiebereglers.
+     * @param points Kalibrierungspunkte der Skala.
+     * @return interpolierter Peak-Flow-Wert in l/min oder
+     *         {@code null}, falls keine Berechnung möglich ist.
+     */
     public Integer interpolate(SliderPoint slider, List<ScalePoint> points) {
         if (points == null || points.isEmpty() || slider == null) {
             return null;
         }
 
-        points.sort(Comparator.comparingInt(ScalePoint::getY));
+        List<ScalePoint> sorted = new ArrayList<>(points);
+        sorted.sort(Comparator.comparingInt(ScalePoint::getY));
         int sliderY = slider.getY();
 
         ScalePoint firstPoint = points.get(0);
@@ -37,13 +60,13 @@ public class ValueInterpolator {
 
                 int finalValue = Math.round(exactValue / 10f) * 10;
 
-                Log.d("OCR_Math", "SliderY=" + sliderY + " matched between Y=" + p1.getY() + " and Y=" + p2.getY()
+                Log.d("OCR", "SliderY=" + sliderY + " matched between Y=" + p1.getY() + " and Y=" + p2.getY()
                         + " | Calculated Value=" + finalValue);
 
                 return finalValue;
             }
         }
-        return firstPoint.getValue();
+        return firstPoint.getValue(); // Fallback (sollte normalerweise nicht erreicht werden)
     }
 }
 

@@ -37,6 +37,14 @@ import at.fhj.peakflowmate.data.model.Measurement;
 import at.fhj.peakflowmate.data.repository.MeasurementRepository;
 import at.fhj.peakflowmate.utils.ZoneSettings;
 
+/**
+ * Aktivität zur Anzeige des Peak-Flow-Tagebuchs.
+ * <p>
+ * Diese Aktivität stellt gespeicherte Peak-Flow-Messungen in Form einer
+ * Liste und eines Liniendiagramms dar. Zusätzlich werden statistische
+ * Kennwerte berechnet sowie ein Export der Messdaten als CSV-Datei
+ * bereitgestellt.
+ */
 public class DiaryActivity extends AppCompatActivity {
 
     private MeasurementRepository repository;
@@ -48,6 +56,17 @@ public class DiaryActivity extends AppCompatActivity {
     private LiveData<List<Measurement>> currentDataLiveData;
     private LiveData<Integer> personalBestLiveData;
 
+    /**
+     * Initialisiert die Benutzeroberfläche des Tagebuchs.
+     * <p>
+     * Richtet die Liste der Messungen, das Diagramm sowie die
+     * Schaltflächen zur Auswahl des Zeitraums und zum Export der
+     * Messdaten ein.
+     *
+     * @param savedInstanceState enthält den zuvor gespeicherten Zustand der
+     *                           Aktivität oder {@code null}, falls keiner
+     *                           vorhanden ist.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,10 +107,23 @@ public class DiaryActivity extends AppCompatActivity {
         loadData(7);
     }
 
+    /**
+     * Lädt Messdaten für den angegebenen Zeitraum.
+     * <p>
+     * Die geladenen Daten werden in der Liste und im Diagramm angezeigt.
+     * Zusätzlich werden die statistischen Kennwerte aktualisiert.
+     *
+     * @param days Anzahl der zurückliegenden Tage. Der Wert {@code 0}
+     *             lädt sämtliche gespeicherten Messungen.
+     */
     private void loadData(int days) {
         currentDays = days;
 
         currentDataLiveData = (days > 0) ? repository.getSince(days) : repository.getAll();
+
+        if (currentDataLiveData != null) {
+            currentDataLiveData.removeObservers(this);
+        }
 
         currentDataLiveData.observe(this, measurements -> {
             if (measurements == null || measurements.isEmpty()) {
@@ -108,11 +140,16 @@ public class DiaryActivity extends AppCompatActivity {
             updateStats(measurements);
             updateChart(measurements);
         });
-        repository.getPersonalBest().observe(this, pb -> {
-            if (pb != null) adapter.setPersonalBest(pb);
-        });
     }
 
+    /**
+     * Berechnet und aktualisiert die statistischen Kennwerte.
+     * <p>
+     * Angezeigt werden der letzte Messwert, der Durchschnitts-, der
+     * Minimal- und der Maximalwert.
+     *
+     * @param list Liste der auszuwertenden Messungen.
+     */
     private void updateStats(List<Measurement> list) {
         int last = list.get(0).getValue();
         int max = last, min = last;
@@ -131,6 +168,12 @@ public class DiaryActivity extends AppCompatActivity {
         tvMin.setText(String.valueOf(min));
     }
 
+    /**
+     * Konfiguriert das Liniendiagramm zur Darstellung der Messwerte.
+     * <p>
+     * Legt unter anderem die Achsen, die Darstellung sowie die
+     * Interaktionseigenschaften des Diagramms fest.
+     */
     private void setupChart() {
         chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(false);
@@ -141,6 +184,14 @@ public class DiaryActivity extends AppCompatActivity {
         chart.getAxisLeft().setAxisMinimum(0f);
     }
 
+    /**
+     * Aktualisiert das Diagramm mit den angegebenen Messdaten.
+     * <p>
+     * Erstellt die Datenreihe für das Diagramm und zeichnet zusätzlich
+     * die Grenzlinien der Peak-Flow-Zonen.
+     *
+     * @param list Liste der darzustellenden Messungen.
+     */
     private void updateChart(List<Measurement> list) {
         List<Measurement> sorted = new ArrayList<>(list);
         Collections.reverse(sorted);
@@ -187,6 +238,13 @@ public class DiaryActivity extends AppCompatActivity {
         chart.invalidate();
     }
 
+    /**
+     * Exportiert sämtliche gespeicherten Messungen als CSV-Datei.
+     * <p>
+     * Die erzeugte Datei wird im anwendungsspezifischen Speicher
+     * abgelegt und kann anschließend über den Android-Freigabedialog
+     * mit anderen Anwendungen geteilt werden.
+     */
     private void exportCsv() {
         LiveData<List<Measurement>> exportSource = repository.getAll();
 

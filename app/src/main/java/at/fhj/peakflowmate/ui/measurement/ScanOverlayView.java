@@ -11,6 +11,14 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * Benutzerdefinierte View zur Darstellung einer Scan-Überlagerung.
+ * <p>
+ * Die View dunkelt den Hintergrund ab und hebt einen zentralen
+ * Scanbereich hervor, der als Orientierung für die Positionierung
+ * des Peak-Flow-Messgeräts dient. Zusätzlich werden Hilfslinien
+ * innerhalb des Scanbereichs dargestellt.
+ */
 public class ScanOverlayView extends View {
 
     private final Paint dimPaint = new Paint();
@@ -20,21 +28,43 @@ public class ScanOverlayView extends View {
 
     private RectF frame;
 
+    /**
+     * Erstellt eine neue Scan-Überlagerung.
+     *
+     * @param context Anwendungskontext.
+     */
     public ScanOverlayView(Context context) {
         super(context);
         init();
     }
 
+    /**
+     * Erstellt eine neue Scan-Überlagerung.
+     *
+     * @param context Anwendungskontext.
+     * @param attrs Attribute aus der XML-Layoutdatei.
+     */
     public ScanOverlayView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
+    /**
+     * Erstellt eine neue Scan-Überlagerung.
+     *
+     * @param context Anwendungskontext.
+     * @param attrs Attribute aus der XML-Layoutdatei.
+     * @param defStyleAttr Standardstil der View.
+     */
     public ScanOverlayView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
+    /**
+     * Initialisiert die Zeichenobjekte und konfiguriert das Erscheinungsbild
+     * der Scan-Überlagerung.
+     */
     private void init() {
 
         setLayerType(LAYER_TYPE_HARDWARE, null);
@@ -55,6 +85,15 @@ public class ScanOverlayView extends View {
         hintPaint.setAntiAlias(true);
     }
 
+    /**
+     * Zeichnet die Scan-Überlagerung.
+     * <p>
+     * Der Hintergrund wird abgedunkelt, der Scanbereich freigestellt und
+     * mit einem Rahmen versehen. Anschließend werden Orientierungslinien
+     * innerhalb des Scanbereichs gezeichnet.
+     *
+     * @param canvas Zeichenfläche der View.
+     */
     @Override
     protected void onDraw(Canvas canvas) {
 
@@ -98,6 +137,11 @@ public class ScanOverlayView extends View {
         drawHint(canvas);
     }
 
+    /**
+     * Zeichnet Orientierungslinien innerhalb des Scanbereichs.
+     *
+     * @param canvas Zeichenfläche der View.
+     */
     private void drawHint(Canvas canvas) {
 
         if (frame == null)
@@ -130,11 +174,14 @@ public class ScanOverlayView extends View {
                 frame.bottom - dp(45),
                 hintPaint
         );
-
-        Path p = new Path();
-        canvas.drawPath(p, hintPaint);
     }
 
+    /**
+     * Wandelt einen Wert von Density-independent Pixels (dp) in Pixel um.
+     *
+     * @param value Wert in dp.
+     * @return entsprechender Wert in Pixel.
+     */
     private float dp(float value) {
         return value * getResources().getDisplayMetrics().density;
     }

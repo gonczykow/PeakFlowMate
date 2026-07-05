@@ -3,8 +3,21 @@ package at.fhj.peakflowmate.ocr;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Hilfsklasse zur Kalibrierung der Peak-Flow-Skala.
+ * <p>
+ * Die Klasse wandelt die normierten Kalibrierungspunkte einer
+ * Peak-Flow-Skala in Bildkoordinaten um und erstellt daraus
+ * eine Liste von Skalenpunkten für die spätere Interpolation.
+ */
 public class ScaleCalibration {
 
+    /**
+     * Kalibrierungspunkte der Peak-Flow-Skala.
+     * Jede Zeile enthält:
+     * [0] relative Position (0.0–1.0),
+     * [1] Peak-Flow-Wert in l/min.
+     */
     private static final float[][] CALIBRATION = {
             {0.00f, 800},
             {0.12f, 700},
@@ -23,6 +36,17 @@ public class ScaleCalibration {
             {1.00f, 50},
     };
 
+    /**
+     * Berechnet die Positionen der Kalibrierungspunkte innerhalb einer
+     * erkannten Skala.
+     * <p>
+     * Die normierten Kalibrierungsdaten werden auf die tatsächliche Höhe
+     * der erkannten Skala abgebildet und als Liste von Skalenpunkten
+     * zurückgegeben.
+     *
+     * @param bounds Begrenzungen der erkannten Skala.
+     * @return Liste der berechneten Skalenpunkte.
+     */
     public static List<ScalePoint> scaleToBitmap(ScaleBounds bounds) {
 
         if (bounds == null) {

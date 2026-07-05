@@ -22,6 +22,15 @@ import androidx.core.view.WindowInsetsCompat;
 import at.fhj.peakflowmate.R;
 import at.fhj.peakflowmate.audio.AudioAnalyser;
 
+/**
+ * Aktivität zur Erkennung des Ausatemgeräuschs über das Mikrofon.
+ * <p>
+ * Diese Aktivität fordert die erforderliche Mikrofonberechtigung an,
+ * analysiert das Audiosignal des Benutzers und erkennt einen gültigen
+ * Ausatemvorgang. Nach erfolgreicher Erkennung wird die Kameraaktivität
+ * zur weiteren Peak-Flow-Messung gestartet. Während der Analyse wird
+ * eine animierte Pegelanzeige dargestellt.
+ */
 public class MicrophoneActivity extends AppCompatActivity {
 
     private AudioAnalyser audioAnalyser;
@@ -41,6 +50,18 @@ public class MicrophoneActivity extends AppCompatActivity {
                         }
                     });
 
+    /**
+     * Initialisiert die Benutzeroberfläche und überprüft die Berechtigung
+     * für den Zugriff auf das Mikrofon.
+     * <p>
+     * Ist die Berechtigung bereits vorhanden, wird die Audioanalyse sofort
+     * gestartet. Andernfalls wird der Benutzer zur Erteilung der Berechtigung
+     * aufgefordert.
+     *
+     * @param savedInstanceState enthält den zuvor gespeicherten Zustand der
+     *                           Aktivität oder {@code null}, falls keiner
+     *                           vorhanden ist.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -62,6 +83,15 @@ public class MicrophoneActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Startet die Analyse des Mikrofonsignals.
+     * <p>
+     * Während der Analyse wird eine Statusanzeige sowie eine Animation
+     * dargestellt. Bei erfolgreicher Erkennung eines Ausatemvorgangs wird
+     * die Kameraaktivität geöffnet. Falls kein gültiger Ausatemvorgang
+     * erkannt wird, erhält der Benutzer die Möglichkeit, den Vorgang
+     * erneut zu starten oder abzubrechen.
+     */
     private void startListening() {
         TextView tvStatus = findViewById(R.id.tvStatus);
         tvStatus.setText(R.string.h_ren);
@@ -86,7 +116,7 @@ public class MicrophoneActivity extends AppCompatActivity {
                             .setTitle(R.string.nicht_erkannt)
                             .setMessage(R.string.bitte_noch_einmal_versuchen)
                             .setPositiveButton(R.string.ok, (dialog, which) -> {
-                                AudioAnalyser audioAnalyzer = new AudioAnalyser(this);
+                                audioAnalyzer = new AudioAnalyser(this);
                                 audioAnalyzer.start();
                             })
                             .setNegativeButton(R.string.abbrechen, (dialog, which) -> finish())
@@ -99,6 +129,12 @@ public class MicrophoneActivity extends AppCompatActivity {
         audioAnalyser.start();
         }
 
+    /**
+     * Startet die Animation der Pegelanzeige.
+     * <p>
+     * Die Balken werden periodisch in ihrer Höhe verändert, um während
+     * der Audioanalyse eine visuelle Rückmeldung zu geben.
+     */
         private void animateBars() {
             int[] heights = {8, 16, 24, 32, 24, 16, 8};
             for (int i = 0; i < bars.length; i++) {
@@ -120,6 +156,12 @@ public class MicrophoneActivity extends AppCompatActivity {
             }
         }
 
+    /**
+     * Gibt verwendete Ressourcen frei.
+     * <p>
+     * Beendet die Audioanalyse, sofern sie noch aktiv ist, bevor die
+     * Aktivität zerstört wird.
+     */
         @Override
         protected void onDestroy() {
         super.onDestroy();

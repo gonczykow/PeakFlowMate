@@ -1,17 +1,37 @@
 package at.fhj.peakflowmate.ocr;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.util.Log;
 
+/**
+ * Hilfsklasse zum Zuschneiden des Skalenbereichs eines
+ * Peak-Flow-Messgeräts.
+ * <p>
+ * Basierend auf der Position der Führungsmarkierung wird ein
+ * Bildausschnitt erzeugt, der die Skala für die weitere
+ * Verarbeitung enthält.
+ */
 public class ScaleCropper {
 
     private static final float CROP_WIDTH_PERCENT = 0.30f;
     private static final int HORIZONTAL_OFFSET = 20;
 
+    /**
+     * Schneidet den Skalenbereich aus dem aufgenommenen Bild aus.
+     * <p>
+     * Die Position des Zuschnitts wird anhand der erkannten
+     * Führungsmarkierung bestimmt. Neben dem zugeschnittenen Bild
+     * wird auch dessen horizontale Position im Originalbild
+     * zurückgegeben.
+     *
+     * @param bitmap Originalbild des Peak-Flow-Messgeräts.
+     * @param guideX X-Koordinate der erkannten Führungsmarkierung.
+     * @return das Ergebnis des Bildzuschnitts oder {@code null},
+     *         falls kein gültiger Zuschnitt möglich ist.
+     */
     public CropResult cropScale(Bitmap bitmap, int guideX) {
 
-        if (guideX < 0 || bitmap == null) {
+        if (bitmap == null || guideX < 0) {
             return null;
         }
 

@@ -15,12 +15,32 @@ import androidx.viewpager2.widget.ViewPager2;
 import at.fhj.peakflowmate.MainActivity;
 import at.fhj.peakflowmate.R;
 
+/**
+ * Aktivität zur Einführung neuer Benutzer in die Anwendung.
+ * <p>
+ * Diese Aktivität präsentiert die wichtigsten Funktionen von PeakFlowMate
+ * mithilfe eines ViewPager2. Nach Abschluss oder Überspringen des
+ * Onboardings wird der entsprechende Status gespeichert, sodass die
+ * Einführung bei zukünftigen Starts der Anwendung nicht erneut angezeigt
+ * wird.
+ */
 public class OnboardingActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager;
     private Button btnNext;
     private Button btnSkip;
 
+    /**
+     * Initialisiert die Onboarding-Aktivität.
+     * <p>
+     * Richtet den ViewPager mit den einzelnen Einführungsseiten ein und
+     * konfiguriert die Navigation über die Schaltflächen zum Fortfahren
+     * oder Überspringen des Onboardings.
+     *
+     * @param savedInstanceState enthält den zuvor gespeicherten Zustand der
+     *                           Aktivität oder {@code null}, falls keiner
+     *                           vorhanden ist.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +92,12 @@ public class OnboardingActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Beendet das Onboarding.
+     * <p>
+     * Speichert den erfolgreichen Abschluss des Onboardings in den
+     * Anwendungseinstellungen und öffnet anschließend die Hauptaktivität.
+     */
     private void finishOnboarding() {
         getSharedPreferences("app_prefs", MODE_PRIVATE)
                 .edit()

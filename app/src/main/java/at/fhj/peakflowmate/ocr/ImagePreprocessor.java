@@ -6,8 +6,23 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 
+/**
+ * Hilfsklasse zur Vorverarbeitung von Bildern für die OCR-Erkennung.
+ * <p>
+ * Die Klasse stellt Methoden zur Graustufenumwandlung sowie zur
+ * Binärisierung eines Bildes bereit, um die Erkennung von
+ * Peak-Flow-Skalen und Messwerten zu verbessern.
+ */
 public class ImagePreprocessor {
 
+    private static final int DEFAULT_THRESHOLD = 170;
+
+    /**
+     * Wandelt ein Farbbild in ein Graustufenbild um.
+     *
+     * @param source das ursprüngliche Bild.
+     * @return die Graustufenversion des Bildes.
+     */
     public static Bitmap toGray(Bitmap source) {
 
         Bitmap gray = Bitmap.createBitmap(
@@ -30,6 +45,14 @@ public class ImagePreprocessor {
         return gray;
     }
 
+    /**
+     * Wandelt ein Graustufenbild mithilfe eines festen Schwellenwerts
+     * in ein Schwarz-Weiß-Bild um.
+     *
+     * @param gray Graustufenbild.
+     * @param threshold Schwellenwert für die Binärisierung.
+     * @return das binarisierte Bild.
+     */
     public static Bitmap threshold(Bitmap gray, int threshold) {
 
         Bitmap out = Bitmap.createBitmap(
@@ -56,10 +79,19 @@ public class ImagePreprocessor {
         return out;
     }
 
+    /**
+     * Führt die Standardvorverarbeitung für die Objekterkennung durch.
+     * <p>
+     * Das Bild wird zunächst in Graustufen umgewandelt und anschließend
+     * binarisiert.
+     *
+     * @param bitmap das zu verarbeitende Bild.
+     * @return das vorverarbeitete Bild.
+     */
     public static Bitmap prepareForDetection(Bitmap bitmap) {
 
         Bitmap gray = toGray(bitmap);
 
-        return threshold(gray, 170);
+        return threshold(gray, DEFAULT_THRESHOLD);
     }
 }

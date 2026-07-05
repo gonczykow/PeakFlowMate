@@ -13,6 +13,13 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.List;
 
+/**
+ * Führt die vollständige OCR-Verarbeitung eines Peak-Flow-Messgeräts durch.
+ * <p>
+ * Die Pipeline umfasst die Vorverarbeitung des Bildes, die Erkennung des
+ * Schiebers, das Zuschneiden der Skala, die Bestimmung der Skalenbegrenzung
+ * sowie die Berechnung des Peak-Flow-Werts anhand der Position des Schiebers.
+ */
 public class OcrPipeline {
 
     private final SliderDetector sliderDetector = new SliderDetector();
@@ -20,11 +27,29 @@ public class OcrPipeline {
     private final ValueInterpolator interpolator = new ValueInterpolator();
     private final Context context;
 
+    /**
+     * Erstellt eine neue OCR-Pipeline.
+     *
+     * @param context Anwendungskontext zur Bereitstellung lokalisierter
+     *                Fehlermeldungen.
+     */
     public OcrPipeline(Context context) {
 
         this.context = context.getApplicationContext();
     }
 
+    /**
+     * Führt die vollständige Erkennung des Peak-Flow-Werts durch.
+     * <p>
+     * Das Bild wird zunächst vorverarbeitet. Anschließend werden die
+     * Führungsmarkierung und der Schieber erkannt, die Skala zugeschnitten
+     * und normalisiert. Abschließend wird der Peak-Flow-Wert anhand der
+     * Position des Schiebers interpoliert.
+     *
+     * @param bitmap aufgenommenes Bild des Peak-Flow-Messgeräts.
+     * @return ein {@link Task}, der den erkannten Peak-Flow-Wert liefert
+     *         oder eine Exception enthält, falls die Erkennung fehlschlägt.
+     */
     public Task<Integer> recognize(Bitmap bitmap) {
 
         TaskCompletionSource<Integer> source =
@@ -73,7 +98,7 @@ public class OcrPipeline {
         ScaleBounds bounds =
                 ScaleNormalizer.detect(croppedScaleMonochrome);
         if (bounds == null || bounds.getBottomY() <= bounds.getTopY() || bounds.getTopY() == -1) {
-            source.setException(new Exception("Scale normalization failed"));
+            source.setException(new Exception(context.getString(R.string.scale_normalization_failed)));
             return source.getTask();
         }
         Log.d("OCR",
@@ -87,7 +112,7 @@ public class OcrPipeline {
         Integer value = interpolator.interpolate(sliderOnCrop, points);
 
         if (value == null) {
-            source.setException(new Exception("Interpolation failed"));
+            source.setException(new Exception(context.getString(R.string.interpolation_failed)));
         } else {
             source.setResult(value);
         }

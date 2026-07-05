@@ -7,10 +7,26 @@ import android.util.Log;
 
 import java.util.ArrayDeque;
 
+/**
+ * Erkennt den roten Schieberegler eines Peak-Flow-Meters auf einem Bild.
+ * <p>
+ * Die Klasse bestimmt zunächst die Position der Skalenführung und sucht
+ * anschließend den roten Schieberegler innerhalb eines begrenzten
+ * Bildbereichs. Die ermittelte Position dient als Grundlage für die
+ * spätere Berechnung des Peak-Flow-Werts.
+ */
 public class SliderDetector {
 
     private static final int DARK_THRESHOLD = 80;
 
+    /**
+     * Erkennt den Schieberegler anhand der zuvor bestimmten Skalenführung.
+     *
+     * @param bitmap Originalbild des Peak-Flow-Meters.
+     * @param guideX X-Koordinate der erkannten Skalenführung.
+     * @return die Position des Schiebereglers oder {@code null},
+     *         wenn kein Schieberegler erkannt wurde.
+     */
     public SliderPoint detect(Bitmap bitmap, int guideX) {
 
         if (guideX < 0) {
@@ -20,6 +36,17 @@ public class SliderDetector {
         return findSlider(bitmap, guideX);
     }
 
+    /**
+     * Sucht die vertikale Skalenführung im Bild.
+     * <p>
+     * Für jede Bildspalte wird ein Bewertungswert berechnet, der auf der
+     * Länge zusammenhängender dunkler Pixel sowie der Gesamtanzahl dunkler
+     * Pixel basiert.
+     *
+     * @param gray vorbereitete binarisierte Bildaufnahme.
+     * @return X-Koordinate der erkannten Skalenführung oder
+     *         {@code -1}, falls keine Führung gefunden wurde.
+     */
     public int detectGuide(Bitmap gray) {
 
         int w = gray.getWidth();
@@ -71,6 +98,17 @@ public class SliderDetector {
         return bestX;
     }
 
+    /**
+     * Sucht den roten Schieberegler innerhalb des relevanten Bildbereichs.
+     * <p>
+     * Zusammenhängende rote Pixel werden mittels Flood-Fill analysiert.
+     * Die größte erkannte Region wird als Schieberegler interpretiert.
+     *
+     * @param bitmap Originalbild.
+     * @param guideX X-Koordinate der Skalenführung.
+     * @return Mittelpunkt des erkannten Schiebereglers oder
+     *         {@code null}, falls kein geeigneter Bereich gefunden wurde.
+     */
     private SliderPoint findSlider(Bitmap bitmap, int guideX) {
 
         int width = bitmap.getWidth();
@@ -192,6 +230,16 @@ public class SliderDetector {
         return new SliderPoint(centerX, centerY);
     }
 
+    /**
+     * Prüft, ob ein Pixel als rot klassifiziert werden kann.
+     * <p>
+     * Die Entscheidung basiert auf den RGB-Komponenten sowie auf Farbton,
+     * Sättigung und Helligkeit im HSV-Farbraum.
+     *
+     * @param color zu prüfender Farbwert.
+     * @return {@code true}, wenn der Pixel als rot erkannt wird,
+     *         andernfalls {@code false}.
+     */
     private boolean isRed(int color) {
         int r = Color.red(color);
         int g = Color.green(color);
@@ -219,47 +267,4 @@ public class SliderDetector {
 
         return isRedHue && isSaturated && isBrightEnough;
     }
-
-    public Bitmap createRedMask(Bitmap bitmap) {
-
-        int left = 0;
-        int right = bitmap.getWidth() - 1;
-
-        int top = bitmap.getHeight() / 5;
-        int bottom = bitmap.getHeight() * 9 / 10;
-
-        Bitmap mask = Bitmap.createBitmap(
-                bitmap.getWidth(),
-                bitmap.getHeight(),
-                Bitmap.Config.ARGB_8888
-        );
-        int redPixels = 0;
-
-        for (int y = top; y < bottom; y++) {
-
-            for (int x = left; x <= right; x++) {
-
-                    if (isRed(bitmap.getPixel(x, y))) {
-                        redPixels++;
-                    }
-
-                    if (isRed(bitmap.getPixel(x, y))) {
-                        mask.setPixel(x, y, Color.WHITE);
-                    } else {
-                        mask.setPixel(x, y, Color.BLACK);
-                    }
-
-                    int logY = bitmap.getHeight() / 2;
-                    if (y >= logY - 5 && y <= logY + 5) {
-                        int pixel = bitmap.getPixel(x, y);
-                        float[] hsv = new float[3];
-                        Color.colorToHSV(pixel, hsv);
-                    }
-            }
-
-        }
-        Log.d("OCR", "Total red pixels = " + redPixels);
-            return mask;
-        }
-
 }

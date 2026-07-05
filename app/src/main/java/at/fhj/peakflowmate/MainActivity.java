@@ -22,10 +22,36 @@ import at.fhj.peakflowmate.ui.measurement.MicrophoneActivity;
 import at.fhj.peakflowmate.ui.onboarding.OnboardingActivity;
 import at.fhj.peakflowmate.ui.settings.SettingsActivity;
 
+/**
+ * Hauptaktivität der Anwendung.
+ * <p>
+ * Diese Aktivität dient als Startbildschirm von PeakFlowMate. Sie überprüft,
+ * ob das Onboarding bereits abgeschlossen wurde, und leitet den Benutzer
+ * gegebenenfalls zur Onboarding-Aktivität weiter. Außerdem werden die letzte
+ * gespeicherte Peak-Flow-Messung angezeigt sowie Navigationsmöglichkeiten
+ * zur Messung, zum Tagebuch und zu den Einstellungen bereitgestellt.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private MeasurementRepository repository;
 
+    /**
+     * Initialisiert die Hauptaktivität.
+     *
+     * Führt die folgenden Schritte aus:
+     *
+     *     Überprüft, ob das Onboarding abgeschlossen wurde.
+     *     Initialisiert die Benutzeroberfläche und Edge-to-Edge-Darstellung.
+     *     Erstellt das Repository für Messdaten.
+     *     Zeigt die zuletzt gespeicherte Peak-Flow-Messung an.
+     *     Registriert Listener für die Navigation zur Messung,
+     *     zum Tagebuch und zu den Einstellungen.
+     *
+     *
+     * @param savedInstanceState enthält den zuvor gespeicherten Zustand der
+     *                           Aktivität oder {@code null}, falls keiner
+     *                           vorhanden ist.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -2,7 +2,6 @@ package at.fhj.peakflowmate.ui.settings;
 
 import android.Manifest;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -28,11 +27,33 @@ import at.fhj.peakflowmate.R;
 import at.fhj.peakflowmate.utils.ReminderWorker;
 import at.fhj.peakflowmate.utils.ZoneSettings;
 
+/**
+ * Aktivität zur Konfiguration der Anwendungseinstellungen.
+ * <p>
+ * Diese Aktivität ermöglicht die Anpassung der Grenzwerte für die
+ * Peak-Flow-Zonen sowie die Konfiguration einer täglichen Erinnerung
+ * an die Durchführung einer Peak-Flow-Messung.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     private int reminderHour = 8;
     private int reminderMinute = 0;
+    private static final String PREFS = "zone_settings";
+    private static final String KEY_REMINDER_HOUR = "reminder_hour";
+    private static final String KEY_REMINDER_MINUTE = "reminder_minute";
+    private static final String WORK_NAME = "peak_flow_reminder";
 
+    /**
+     * Initialisiert die Einstellungsansicht.
+     * <p>
+     * Lädt die gespeicherten Grenzwerte und die Erinnerungszeit,
+     * richtet die Benutzeroberfläche ein und speichert geänderte
+     * Einstellungen nach Bestätigung durch den Benutzer.
+     *
+     * @param savedInstanceState enthält den zuvor gespeicherten Zustand der
+     *                           Aktivität oder {@code null}, falls keiner
+     *                           vorhanden ist.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,9 +65,9 @@ public class SettingsActivity extends AppCompatActivity {
         TextView tvSelectedTime = findViewById(R.id.tvSelectedTime);
         Button btnTimePicker = findViewById(R.id.btnTimePicker);
 
-        SharedPreferences prefs = getSharedPreferences("zone_settings", MODE_PRIVATE);
-        reminderHour = prefs.getInt("reminder_hour", 8);
-        reminderMinute = prefs.getInt("reminder_minute", 0);
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        reminderHour = prefs.getInt(KEY_REMINDER_HOUR, 8);
+        reminderMinute = prefs.getInt(KEY_REMINDER_MINUTE, 0);
         tvSelectedTime.setText(
                 String.format(Locale.getDefault(), "%02d:%02d", reminderHour, reminderMinute));
 
@@ -82,10 +103,24 @@ public class SettingsActivity extends AppCompatActivity {
                 return;
             }
 
+            if (yellow > 900 || green > 900) {
+                Toast.makeText(this,
+                        R.string.wert_darf_nicht_h_her_als_900_sein,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (yellow < 50 || green < 50) {
+                Toast.makeText(this,
+                        R.string.wert_darf_nicht_kleiner_als_50_sein,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             ZoneSettings.save(this, green, yellow);
             prefs.edit()
-                    .putInt("reminder_hour", reminderHour)
-                    .putInt("reminder_minute", reminderMinute)
+                    .putInt(KEY_REMINDER_HOUR, reminderHour)
+                    .putInt(KEY_REMINDER_MINUTE, reminderMinute)
                     .apply();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (ContextCompat.checkSelfPermission(this,
@@ -104,6 +139,12 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Launcher zur Anforderung der Berechtigung für Benachrichtigungen.
+     * <p>
+     * Nach erfolgreicher Berechtigungsvergabe wird die tägliche Erinnerung
+     * geplant.
+     */
     private final ActivityResultLauncher<String> requestNotification =
             registerForActivityResult(
                     new ActivityResultContracts.RequestPermission(),
@@ -117,6 +158,15 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     });
 
+    /**
+     * Plant eine täglich wiederkehrende Erinnerung zur Peak-Flow-Messung.
+     * <p>
+     * Die Erinnerung wird mithilfe des WorkManagers eingerichtet und
+     * beginnt zum angegebenen Zeitpunkt.
+     *
+     * @param hour Stunde der Erinnerung.
+     * @param minute Minute der Erinnerung.
+     */
     private void scheduleReminder(int hour, int minute) {
         Calendar now = Calendar.getInstance();
         Calendar target = Calendar.getInstance();
@@ -138,7 +188,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .build();
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "peak_flow_reminder",
+                WORK_NAME,
                 ExistingPeriodicWorkPolicy.UPDATE,
                 request
         );
